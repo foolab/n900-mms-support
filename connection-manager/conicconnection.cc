@@ -14,6 +14,8 @@ bool ConicConnection::connect() {
   Q_ASSERT(m_connection == 0);
   m_connection = con_ic_connection_new();
   return con_ic_connection_connect_by_id(m_connection, m_name.toUtf8().data(), CON_IC_CONNECT_FLAG_NONE) == TRUE;
+
+  // TODO: handle errors.
 }
 
 void ConicConnection::disconnect() {
