@@ -1,3 +1,3 @@
 TEMPLATE = subdirs
 CONFIG = ordered
-SUBDIRS = mkmms dumpmms
+SUBDIRS = mkmms dumpmms connection-manager
