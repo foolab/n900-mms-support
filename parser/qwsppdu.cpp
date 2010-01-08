@@ -18,14 +18,13 @@
 ****************************************************************************/
 
 #include <qwsppdu.h>
-#include <qmimetype.h>
 #include <qtextcodec.h>
 #include <qdatetime.h>
 #include <qiodevice.h>
-#include <qtimezone.h>
 #include <qbuffer.h>
 #include <netinet/in.h>
 #include <stdlib.h>
+#include <QStringList>
 
 // Reference: WAP-230-WSP
 //            Wireless Application Protocol
