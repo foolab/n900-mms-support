@@ -903,10 +903,15 @@ QString QWspPduDecoder::decodeParameter()
                     quint32 c = decodeInteger();
                     int i = 0;
                     while (charsetAssignments[i].number) {
-                        if (charsetAssignments[i].number == c)
-                            p += charsetAssignments[i].charset;
+		      if (charsetAssignments[i].number == c) {
+			p += charsetAssignments[i].charset;
+			break;
+		      }
+		      else {
                         i++;
+		      }
                     }
+
                     if (!charsetAssignments[i].number)
                         p += "\"*\"";
                 }
