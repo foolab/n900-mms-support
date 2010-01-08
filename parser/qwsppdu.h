@@ -24,7 +24,7 @@
 #include <qobject.h>
 #include <qdatetime.h>
 
-#include <qtopiaglobal.h>
+#define PHONESIM
 
 class QIODevice;
 
