@@ -14,6 +14,7 @@ MmsMessage::MmsMessage(const MessageType& type) {
   m_messageClass = "Personal";
   m_priority = PriorityUnset;
   m_type = type;
+  m_size = 0;
 }
 
 MmsMessage::MmsMessage(QIODevice *in) {
@@ -22,6 +23,7 @@ MmsMessage::MmsMessage(QIODevice *in) {
   m_readReplyEnabled = true;
   m_messageClass = "Personal";
   m_priority = PriorityUnset;
+  m_size = 0;
 
   QWspPduDecoder d(in);
 
@@ -45,55 +47,66 @@ bool MmsMessage::decodeHeader(QWspPduDecoder& d) {
 
     switch (pdu) {
     case MM_MTYPE_HDR:
-      //      qDebug() << "MM_MTYPE_HDR";
+      qDebug() << "MM_MTYPE_HDR";
       m_type = getMessageType(d);
       break;
     case MM_TID_HDR:
-      //      qDebug() << "MM_TID_HDR";
+      qDebug() << "MM_TID_HDR";
       m_transactionId = d.decodeTextString();
       break;
     case MM_VERSION_HDR:
-      //      qDebug() << "MM_VERSION_HDR";
+      qDebug() << "MM_VERSION_HDR";
       m_version = d.decodeVersion();
       break;
     case MM_FROM_HDR:
-      //      qDebug() << "MM_FROM_HDR";
+      qDebug() << "MM_FROM_HDR";
       m_from = getFrom(d);
       break;
     case MM_TO_HDR:
-      //      qDebug() << "MM_TO_HDR";
+      qDebug() << "MM_TO_HDR";
       m_to.append(getAddr(d));
       break;
     case MM_CTYPE_HDR:
-      //      qDebug() << "MM_CTYPE_HDR";
+      qDebug() << "MM_CTYPE_HDR";
       m_contentType = d.decodeContentType();
       // This should be the last of the headers.
       return true;
     case MM_SUBJECT_HDR:
-      //      qDebug() << "MM_SUBJECT_HDR";
+      qDebug() << "MM_SUBJECT_HDR";
       m_subject = d.decodeEncodedString();
       break;
     case MM_DATE_HDR:
-      //      qDebug() << "MM_DATE_HDR";
+      qDebug() << "MM_DATE_HDR";
       m_date = QDateTime::fromTime_t(d.decodeLongInteger());
       break;
     case MM_DREPORT_HDR:
-      //      qDebug() << "MM_DREPORT_HDR";
+      qDebug() << "MM_DREPORT_HDR";
       m_deliveryReport = getBool(d);
       break;
     case MM_RREPLY_HDR:
-      //      qDebug() << "MM_RREPLY_HDR";
+      qDebug() << "MM_RREPLY_HDR";
       m_readReplyEnabled = getBool(d);
       break;
     case MM_MCLASS_HDR:
-      //      qDebug() << "MM_MCLASS_HDR";
+      qDebug() << "MM_MCLASS_HDR";
       m_messageClass = getMessageClass(d);
       break;
     case MM_PRIORITY_HDR:
-      //      qDebug() << "MM_PRIORITY_HDR";
+      qDebug() << "MM_PRIORITY_HDR";
       m_priority = getMessagePriority(d);
       break;
-
+    case MM_MSIZE_HDR:
+      qDebug() << "MM_MSIZE_HDR";
+      m_size = d.decodeLongInteger();
+      break;
+    case MM_EXPIRY_HDR:
+      qDebug() << "MM_EXPIRY_HDR";
+      m_expiry = getExpiry(d);
+      break;
+    case MM_CLOCATION_HDR:
+      qDebug() << "MM_CLOCATION_HDR";
+      m_location = d.decodeTextString();
+      break;
     default:
       qDebug() << "Unknown PDU" << QString("0x%1").arg(QString::number((unsigned int)pdu, 16));
       return false;
