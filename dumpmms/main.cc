@@ -38,6 +38,9 @@ int main(int argc, char *argv[]) {
   qDebug() << "Read reply enabled:" << m.isReadReplyEnabled();
   qDebug() << "Message class:" << m.messageClass();
   qDebug() << "Priority:" << m.messagePriority();
+  qDebug() << "Size:" << m.size();
+  qDebug() << "Location:" << m.location();
+  qDebug() << "Expiry:" << m.expiry();
 
   QList<MmsPart> parts = m.parts();
   qDebug() << "Parts:" << parts.size();
