@@ -39,6 +39,9 @@ void setMessageType(QWspPduEncoder& e, MmsMessage::MessageType& t) {
   case MmsMessage::SendReq:
     e.encodeUInt8(PDU_M_SEND_REQ);
     break;
+  case MmsMessage::NotificationInd:
+    e.encodeUInt8(PDU_M_NOTIFICATION_IND);
+    break;
   default: // TODO:
     return;
   }
@@ -51,8 +54,9 @@ MmsMessage::MessageType getMessageType(QWspPduDecoder& d) {
   switch (t) {
   case PDU_M_SEND_REQ:
     return MmsMessage::SendReq;
-  case PDU_M_SEND_CONF:
   case PDU_M_NOTIFICATION_IND:
+    return MmsMessage::NotificationInd;
+  case PDU_M_SEND_CONF:
   case PDU_M_NOTIFYRESP_IND:
   case PDU_M_RETRIEVE_CONF:
   case PDU_M_ACKNOWLEDGE_IND:
@@ -193,6 +197,28 @@ void setMessagePriority(QWspPduEncoder& e, const MmsMessage::MessagePriority& pr
     e.encodeOctet(0x81);
     return;
   }
+}
+
+QDateTime getExpiry(QWspPduDecoder& d) {
+  // Stolen from Qt-extended
+  quint32 len = d.decodeLength();
+  quint8 octet = d.decodeOctet();
+  if (octet == 128) {
+    // absolute
+    quint32 i = d.decodeLongInteger();
+    return QDateTime::fromTime_t(i);
+  } else if (octet == 129) {
+    // relative
+    long s = d.decodeInteger();
+    return QDateTime::currentDateTime().addSecs(s);
+  }
+
+  qWarning("Unknown token in expiry field");
+  while (--len > 0) {
+    d.decodeOctet();
+  }
+
+  return QDateTime();
 }
 
 #endif /* PRIVATE_HH */
