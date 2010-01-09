@@ -15,6 +15,7 @@ public:
   enum MessageType {
     Invalid,
     SendReq,
+    NotificationInd,
     //    SendConf,
     //    Notification,
   };
@@ -77,6 +78,12 @@ public:
   QString messageClass() { return m_messageClass; }
   void setMessageClass(const QString& messageClass) { m_messageClass = messageClass; }
 
+  long size() { return m_size; }
+
+  QString location() { return m_location; }
+
+  QDateTime expiry() { return m_expiry; }
+
 private:
   bool decodeHeader(QWspPduDecoder& d);
   bool encodeHeader(QWspPduEncoder& e);
@@ -97,6 +104,9 @@ private:
   bool m_readReplyEnabled;
   QString m_messageClass;
   MessagePriority m_priority;
+  long m_size;
+  QString m_location;
+  QDateTime m_expiry;
 };
 
 #endif /* MMS_MESSAGE_HH */
