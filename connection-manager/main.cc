@@ -16,8 +16,8 @@ int main(int argc, char *argv[]) {
   ConnectionManager *mgr = new ConnectionManager(&app);
   Q_UNUSED(mgr);
 
-  if (!c.registerObject("/org/foolab/mms/ConnectionManager", &app)) {
-    qWarning() << "Failed to register /org/foolab/mms/ConnectionManager" << c.lastError().message();
+  if (!c.registerObject("/org/foolab/MMS/ConnectionManager", &app)) {
+    qWarning() << "Failed to register /org/foolab/MMS/ConnectionManager" << c.lastError().message();
     return 1;
   }
 
