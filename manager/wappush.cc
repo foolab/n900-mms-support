@@ -1,7 +1,5 @@
 #include "wappush.hh"
 #include <QDebug>
-#include <QDBusInterface>
-#include <QDBusConnection>
 
 WapPush::WapPush(QObject *parent) : QDBusAbstractAdaptor(parent) {
 
@@ -20,8 +18,5 @@ void WapPush::HandleWAPPush(const uchar& bearer, const QString& source, const in
   Q_UNUSED(dst);
   Q_UNUSED(header);
 
-  QDBusInterface i("org.foolab.MMS.Manager", "/org/foolab/MMS/Manager/Incoming", "org.foolab.MMS.Manager.Incoming",
-		   QDBusConnection::systemBus());
-
-  i.call("add", payload);
+  emit addMessage(payload);
 }

@@ -11,6 +11,9 @@ public:
   WapPush(QObject *parent = 0);
   ~WapPush();
 
+signals:
+  void addMessage(const QByteArray& message);
+
 public slots:
    Q_NOREPLY void HandleWAPPush(const uchar& bearer, const QString& source, const int src, const int dst,
 				const QByteArray& header, const QByteArray& payload);
