@@ -21,16 +21,16 @@ WapPush *createAndRegisterWapPush(QDBusConnection& c) {
   return p;
 }
 
+template <typename T> T *createAndRegisterFolder(QDBusConnection& c, const QString& id) {
+  T *t = new T(qApp);
 
-Incoming *createAndRegisterIncoming(QDBusConnection& c) {
-  Incoming *i = new Incoming(qApp);
-
-  if (!c.registerObject("/org/foolab/MMS/Manager/Incoming", i)) {
-    qWarning() << "Failed to register /org/foolab/MMS/Manager/Incoming" << c.lastError().message();
+  QString objectPath = QString("/org/foolab/MMS/Manager/%1").arg(id);
+  if (!c.registerObject(objectPath, t)) {
+    qWarning() << "Failed to register" << objectPath << c.lastError().message();
     return 0;
   }
 
-  return i;
+  return t;
 }
 
 int main(int argc, char *argv[]) {
@@ -48,8 +48,29 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  Incoming *i = createAndRegisterIncoming(c);
+  Incoming *i = createAndRegisterFolder<Incoming>(c, "Incoming");
   if (!i) {
+    return 1;
+  }
+
+  Folder *f = 0;
+  f = createAndRegisterFolder<Sent>(c, "Sent");
+  if (!f) {
+    return 1;
+  }
+
+  f = createAndRegisterFolder<Inbox>(c, "Inbox");
+  if (!f) {
+    return 1;
+  }
+
+  f = createAndRegisterFolder<Outgoing>(c, "Outgoing");
+  if (!f) {
+    return 1;
+  }
+
+  f = createAndRegisterFolder<Reports>(c, "Reports");
+  if (!f) {
     return 1;
   }
 

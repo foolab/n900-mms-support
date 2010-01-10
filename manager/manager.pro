@@ -5,7 +5,5 @@ INCLUDEPATH += . ../parser
 
 QT = core dbus
 
-include(../parser/parser.pri)
-
-HEADERS += folder.hh incoming.hh
-SOURCES += folder.cc main.cc incoming.cc
+HEADERS += adaptor.hh folder.hh wappush.hh folders.hh
+SOURCES += adaptor.cc folder.cc main.cc wappush.cc
