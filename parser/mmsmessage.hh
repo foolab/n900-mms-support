@@ -4,13 +4,14 @@
 #include <QString>
 #include <QStringList>
 #include <QDateTime>
+#include "mmspart.hh"
 
 class QIODevice;
-class MmsPart;
 class QWspPduDecoder;
 class QWspPduEncoder;
 
 class MmsMessage {
+
 public:
   enum MessageType {
     Invalid,
@@ -32,57 +33,58 @@ public:
   MmsMessage(QIODevice *in);
   bool encode(QIODevice *out);
 
-  bool isValid() { return m_type != Invalid; }
+  bool isValid() const { return m_type != Invalid; }
 
-  MessageType type() { return m_type; }
-  QString transactionId() { return m_transactionId; }
+  MessageType type() const { return m_type; }
+
+  QString transactionId() const { return m_transactionId; }
   QString version() { return m_version; }
 
-  QString from() { return m_from; }
+  QString from() const { return m_from; }
   void setFrom(const QString& from) { m_from = from; }
 
-  QStringList to() { return m_to; }
+  QStringList to() const { return m_to; }
   void setTo(const QStringList& to) { m_to = to; }
 
-  QStringList cc() { return m_cc; }
+  QStringList cc() const { return m_cc; }
   void setCc(const QStringList& cc) { m_cc = cc; }
 
-  QStringList bcc() { return m_bcc; }
+  QStringList bcc() const { return m_bcc; }
   void setBcc(const QStringList& bcc) { m_bcc = bcc; }
 
-  QString subject() { return m_subject; }
+  QString subject() const { return m_subject; }
   void setSubject(const QString& subject) { m_subject = subject; }
 
-  QString contentType() { return m_contentType; }
+  QString contentType() const { return m_contentType; }
   void setContentType(const QString& contentType) { m_contentType = contentType; }
 
-  bool isContentRelated() { return m_contentType.indexOf("multipart.related") != -1; }
+  bool isContentRelated() const { return m_contentType.indexOf("multipart.related") != -1; }
   void setContentRelated(bool related);
 
   QList<MmsPart> parts();
 
   void addPart(const MmsPart& part);
 
-  QDateTime date() { return m_date; }
+  QDateTime date() const { return m_date; }
   void setDate(QDateTime& date) { m_date = date; }
 
-  bool isDeliveryReportEnabled() { return m_deliveryReport; }
+  bool isDeliveryReportEnabled() const { return m_deliveryReport; }
   void setDeliveryReportEnabled(bool enabled) { m_deliveryReport = enabled; }
 
-  bool isReadReplyEnabled() { return m_readReplyEnabled; }
+  bool isReadReplyEnabled() const { return m_readReplyEnabled; }
   void setReadReplyEnabled(bool enabled) { m_readReplyEnabled = enabled; }
 
-  MessagePriority messagePriority() { return m_priority; }
+  MessagePriority messagePriority() const { return m_priority; }
   void setMessagePriority(const MessagePriority& priority) { m_priority = priority; }
 
-  QString messageClass() { return m_messageClass; }
+  QString messageClass() const { return m_messageClass; }
   void setMessageClass(const QString& messageClass) { m_messageClass = messageClass; }
 
-  long size() { return m_size; }
+  long size() const { return m_size; }
 
-  QString location() { return m_location; }
+  QString location() const { return m_location; }
 
-  QDateTime expiry() { return m_expiry; }
+  QDateTime expiry() const { return m_expiry; }
 
 private:
   bool decodeHeader(QWspPduDecoder& d);
