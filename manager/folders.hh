@@ -5,7 +5,6 @@
 
 class Incoming : public Folder {
   Q_OBJECT
-  //  Q_CLASSINFO("D-Bus Interface", "org.foolab.MMS.Manager.Incoming");
 
 public:
   Incoming(QObject *parent = 0) : Folder("incoming", parent) {}
@@ -13,7 +12,6 @@ public:
 
 class Outgoing : public Folder {
   Q_OBJECT
-  //  Q_CLASSINFO("D-Bus Interface", "org.foolab.MMS.Manager.Outgoing");
 
 public:
   Outgoing(QObject *parent = 0) : Folder("outgoing", parent) {}
@@ -21,7 +19,6 @@ public:
 
 class Inbox : public Folder {
   Q_OBJECT
-  //  Q_CLASSINFO("D-Bus Interface", "org.foolab.MMS.Manager.Inbox");
 
 public:
   Inbox(QObject *parent = 0) : Folder("inbox", parent) {}
@@ -29,7 +26,6 @@ public:
 
 class Sent : public Folder {
   Q_OBJECT
-  //  Q_CLASSINFO("D-Bus Interface", "org.foolab.MMS.Manager.Sent");
 
 public:
   Sent(QObject *parent = 0) : Folder("sent", parent) {}
@@ -37,7 +33,6 @@ public:
 
 class Reports : public Folder {
   Q_OBJECT
-  //  Q_CLASSINFO("D-Bus Interface", "org.foolab.MMS.Manager.Reports");
 
 public:
   Reports(QObject *parent = 0) : Folder("reports", parent) {}
