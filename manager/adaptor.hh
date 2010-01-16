@@ -8,7 +8,7 @@ class Folder;
 
 class Adaptor : public QDBusAbstractAdaptor {
   Q_OBJECT
-  Q_CLASSINFO("D-Bus Interface", "org.foolab.MMS.Manager.Folder");
+  Q_CLASSINFO("D-Bus Interface", "org.foolab.MMS.Folder");
 
 public:
   Adaptor(Folder *parent);
