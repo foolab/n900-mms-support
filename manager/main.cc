@@ -6,6 +6,7 @@
 #include "wappush.hh"
 
 WapPush *createAndRegisterWapPush(QDBusConnection& c) {
+  // TODO: remove this extra service.
   if (!c.registerService("org.foolab.MMS.WapPush")) {
     qWarning() << "Failed to register org.foolab.MMS.WapPush" << c.lastError().message();
     return 0;
@@ -24,7 +25,7 @@ WapPush *createAndRegisterWapPush(QDBusConnection& c) {
 template <typename T> T *createAndRegisterFolder(QDBusConnection& c, const QString& id) {
   T *t = new T(qApp);
 
-  QString objectPath = QString("/org/foolab/MMS/Manager/%1").arg(id);
+  QString objectPath = QString("/org/foolab/MMS/Folders/%1").arg(id);
   if (!c.registerObject(objectPath, t)) {
     qWarning() << "Failed to register" << objectPath << c.lastError().message();
     return 0;
