@@ -41,6 +41,7 @@ int main(int argc, char *argv[]) {
   qDebug() << "Size:" << m.size();
   qDebug() << "Location:" << m.location();
   qDebug() << "Expiry:" << m.expiry();
+  qDebug() << "Message ID:" << m.messageId();
 
   QList<MmsPart> parts = m.parts();
   qDebug() << "Parts:" << parts.size();
