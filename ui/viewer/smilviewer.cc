@@ -49,6 +49,8 @@ SmilViewer::SmilViewer(const QString& path, QMainWindow *parent) : QMainWindow(p
 
   MmsPart smil = parts.takeAt(smilPart);
 
+  qDebug() << smil.data();
+
   QDomDocument doc;
   if (!doc.setContent(smil.data(), false)) {
     displayAll(parts);
