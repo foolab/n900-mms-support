@@ -17,7 +17,9 @@ public:
     Invalid,
     SendReq,
     NotificationInd,
-    //    SendConf,
+    SendConf,
+    NotifyResp,
+    DeliveryReport,
     //    Notification,
   };
 
@@ -26,6 +28,17 @@ public:
     PriorityLow,
     PriorityNormal,
     PriorityHigh,
+  };
+
+  enum MessageStatus {
+    StatusExpired,
+    StatusRetrieved,
+    StatusRejected,
+    StatusDeferred,
+    StatusUnrecognised,
+    StatusIndeterminate,
+    StatusForwarded,
+    StatusUnreachable,
   };
 
   MmsMessage(const MessageType& type);
@@ -38,6 +51,8 @@ public:
   MessageType type() const { return m_type; }
 
   QString transactionId() const { return m_transactionId; }
+  void setTransactionId(const QString& transactionId) { m_transactionId = transactionId; }
+
   QString version() { return m_version; }
 
   QString from() const { return m_from; }
@@ -80,6 +95,12 @@ public:
   QString messageClass() const { return m_messageClass; }
   void setMessageClass(const QString& messageClass) { m_messageClass = messageClass; }
 
+  MessageStatus messageStatus() { return m_status; }
+  void setMessageStatus(const MessageStatus& status) { m_status = status; }
+
+  QString messageId() { return m_messageId; }
+  void setMessageId(const QString& messageId) { m_messageId = messageId; }
+
   long size() const { return m_size; }
 
   QString location() const { return m_location; }
@@ -90,9 +111,13 @@ private:
   bool decodeHeader(QWspPduDecoder& d);
   bool encodeHeader(QWspPduEncoder& e);
 
+  bool encodeSendReq(QWspPduEncoder& e);
+  bool encodeNotifyResp(QWspPduEncoder& e);
+
   QList<MmsPart> m_parts;
 
   MessageType m_type;
+  MessageStatus m_status;
   QString m_transactionId;
   QString m_version;
   QString m_from;
@@ -109,6 +134,7 @@ private:
   long m_size;
   QString m_location;
   QDateTime m_expiry;
+  QString m_messageId;
 };
 
 #endif /* MMS_MESSAGE_HH */
