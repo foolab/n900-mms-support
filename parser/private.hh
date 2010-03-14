@@ -42,6 +42,14 @@ void setMessageType(QWspPduEncoder& e, MmsMessage::MessageType& t) {
   case MmsMessage::NotificationInd:
     e.encodeUInt8(PDU_M_NOTIFICATION_IND);
     break;
+  case MmsMessage::SendConf:
+    e.encodeUInt8(PDU_M_SEND_CONF);
+    break;
+  case MmsMessage::NotifyResp:
+    e.encodeUInt8(PDU_M_NOTIFYRESP_IND);
+    break;
+  case MmsMessage::DeliveryReport:
+    e.encodeUInt8(PDU_M_DELIVERY_IND);
   default: // TODO:
     return;
   }
@@ -49,7 +57,7 @@ void setMessageType(QWspPduEncoder& e, MmsMessage::MessageType& t) {
 
 MmsMessage::MessageType getMessageType(QWspPduDecoder& d) {
   quint8 t = d.decodeUInt8();
-  //qDebug() << "PDU" << QString("0x%1").arg(QString::number(t, 16));
+  //  qDebug() << "PDU" << QString("0x%1").arg(QString::number(t, 16));
   //  qDebug() << t;
   switch (t) {
   case PDU_M_SEND_REQ:
@@ -57,10 +65,14 @@ MmsMessage::MessageType getMessageType(QWspPduDecoder& d) {
   case PDU_M_NOTIFICATION_IND:
     return MmsMessage::NotificationInd;
   case PDU_M_SEND_CONF:
+    return MmsMessage::SendConf;
   case PDU_M_NOTIFYRESP_IND:
+    return MmsMessage::NotifyResp;
+  case PDU_M_DELIVERY_IND:
+    return MmsMessage::DeliveryReport;
   case PDU_M_RETRIEVE_CONF:
   case PDU_M_ACKNOWLEDGE_IND:
-  case PDU_M_DELIVERY_IND:
+
   case PDU_M_READ_REC_IND:
   case PDU_M_READ_ORIG_IND:
   case PDU_M_FORWARD_REQ:
@@ -219,6 +231,58 @@ QDateTime getExpiry(QWspPduDecoder& d) {
   }
 
   return QDateTime();
+}
+
+MmsMessage::MessageStatus getMessageStatus(QWspPduDecoder& d) {
+  switch (d.decodeOctet()) {
+  case 128:
+    return MmsMessage::StatusExpired;
+  case 129:
+    return MmsMessage::StatusRetrieved;
+  case 130:
+    return MmsMessage::StatusRejected;
+  case 131:
+    return MmsMessage::StatusDeferred;
+  case 132:
+    return MmsMessage::StatusUnrecognised;
+  case 133:
+    return MmsMessage::StatusIndeterminate;
+  case 134:
+    return MmsMessage::StatusForwarded;
+  case 135:
+    return MmsMessage::StatusUnreachable;
+  default:
+    return MmsMessage::StatusUnrecognised;
+  }
+}
+
+void setMessageStatus(QWspPduEncoder& e, const MmsMessage::MessageStatus& status) {
+  switch (status) {
+  case MmsMessage::StatusExpired:
+    e.encodeOctet(128);
+    break;
+  case MmsMessage::StatusRetrieved:
+    e.encodeOctet(129);
+    break;
+  case MmsMessage::StatusRejected:
+    e.encodeOctet(130);
+    break;
+  case MmsMessage::StatusDeferred:
+    e.encodeOctet(131);
+    break;
+  case MmsMessage::StatusUnrecognised:
+    e.encodeOctet(132);
+    break;
+  case MmsMessage::StatusIndeterminate:
+    e.encodeOctet(133);
+    break;
+  case MmsMessage::StatusForwarded:
+    e.encodeOctet(134);
+    break;
+  case MmsMessage::StatusUnreachable:
+    e.encodeOctet(135);
+    break;
+  }
 }
 
 #endif /* PRIVATE_HH */
