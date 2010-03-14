@@ -1,9 +1,12 @@
 TEMPLATE = app
 TARGET = mms-manager
-DEPENDPATH += . ../parser
-INCLUDEPATH += . ../parser
+DEPENDPATH += . ../parser ../common
+INCLUDEPATH += . ../parser ../common
 
-QT = core dbus
+include(../parser/parser.pri)
+include(../common/common.pri)
 
-HEADERS += adaptor.hh folder.hh wappush.hh folders.hh
-SOURCES += adaptor.cc folder.cc main.cc wappush.cc
+QT = core dbus network
+
+HEADERS += folder.hh wappush.hh folders.hh queuemanager.hh queuemanageradaptor.hh proxy.hh mmsprotocolhandler.hh
+SOURCES += folder.cc main.cc wappush.cc queuemanager.cc queuemanageradaptor.cc proxy.cc mmsprotocolhandler.cc
