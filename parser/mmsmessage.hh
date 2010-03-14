@@ -44,6 +44,8 @@ public:
   MmsMessage(const MessageType& type);
 
   MmsMessage(QIODevice *in);
+  MmsMessage(const QString& path);
+
   bool encode(QIODevice *out);
 
   bool isValid() const { return m_type != Invalid; }
