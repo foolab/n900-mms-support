@@ -7,9 +7,9 @@
 
 FolderView::FolderView(const QString& id, FolderViewItemFormatter *formatter, QWidget *parent) :
   QListWidget(parent), m_formatter(formatter) {
-  QString path = QString("/org/foolab/MMS/Manager/%1").arg(id);
+  QString path = QString("/org/foolab/MMS/Folders/%1").arg(id);
   m_interface = new QDBusInterface("org.foolab.MMS.Manager", path,
-				   "org.foolab.MMS.Manager.Folder", QDBusConnection::systemBus(), this);
+				   "org.foolab.MMS.Folder", QDBusConnection::systemBus(), this);
 
   QObject::connect(m_interface, SIGNAL(messageAdded(const QString&)), this, SLOT(messageAdded(const QString&)));
   QObject::connect(m_interface, SIGNAL(messageRemoved(const QString&)), this, SLOT(messageRemoved(const QString&)));
