@@ -19,6 +19,9 @@ public:
 
   bool isSmil() const;
   bool isText() const;
+  bool isVideo() const;
+  bool isAudio() const;
+  bool isImage() const;
 
   void encode(QWspPduEncoder& e) const;
 

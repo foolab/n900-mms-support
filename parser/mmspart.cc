@@ -83,6 +83,18 @@ bool MmsPart::isText() const {
   return contentType().startsWith("text/");
 }
 
+bool MmsPart::isImage() const {
+  return contentType().startsWith("image/");
+}
+
+bool MmsPart::isVideo() const {
+  return contentType().startsWith("video/");
+}
+
+bool MmsPart::isAudio() const {
+  return contentType().startsWith("audio/");
+}
+
 QString MmsPart::suggestedName() const {
   const QWspField *f = m_part.header("Content-Location");
   if (f) {
