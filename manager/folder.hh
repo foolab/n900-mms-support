@@ -11,6 +11,7 @@
 #define MESSAGE_STATUS_FAILED 3
 #define MESSAGE_STATUS_READ 4
 #define MESSAGE_STATUS_UNREAD 5
+#define MESSAGE_STATUS_QUEUED 6
 
 class QSettings;
 
@@ -55,6 +56,55 @@ private:
 class FolderAdaptor : public QDBusAbstractAdaptor {
   Q_OBJECT
   Q_CLASSINFO("D-Bus Interface", "org.foolab.MMS.Folder");
+  Q_CLASSINFO("D-Bus Introspection", ""
+	      "  <interface name=\"org.foolab.MMS.Folder\" >\n"
+	      "    <signal name=\"messageAdded\" >\n"
+	      "      <arg direction=\"out\" type=\"s\" name=\"id\" />\n"
+	      "    </signal>\n"
+	      "    <signal name=\"messageRemoved\" >\n"
+	      "      <arg direction=\"out\" type=\"s\" name=\"id\" />\n"
+	      "    </signal>\n"
+	      "    <signal name=\"messageStatusChanged\" >\n"
+	      "      <arg direction=\"out\" type=\"s\" name=\"id\" />\n"
+	      "      <arg direction=\"out\" type=\"i\" name=\"status\" />\n"
+	      "    </signal>\n"
+	      "    <signal name=\"error\" >\n"
+	      "      <arg direction=\"out\" type=\"s\" name=\"id\" />\n"
+	      "      <arg direction=\"out\" type=\"s\" name=\"message\" />\n"
+	      "    </signal>\n"
+	      "    <method name=\"folderId\" >\n"
+	      "      <arg direction=\"out\" type=\"s\" />\n"
+	      "    </method>\n"
+	      "    <method name=\"addMessage\" >\n"
+	      "      <arg direction=\"out\" type=\"s\" />\n"
+	      "      <arg direction=\"in\" type=\"ay\" name=\"data\" />\n"
+	      "    </method>\n"
+	      "    <method name=\"addMessage\" >\n"
+	      "      <arg direction=\"out\" type=\"s\" />\n"
+	      "      <arg direction=\"in\" type=\"s\" name=\"fullPath\" />\n"
+	      "    </method>\n"
+	      "    <method name=\"deleteMessage\" >\n"
+	      "      <arg direction=\"out\" type=\"b\" />\n"
+	      "      <arg direction=\"in\" type=\"s\" name=\"id\" />\n"
+	      "    </method>\n"
+	      "    <method name=\"allMessages\" >\n"
+	      "      <arg direction=\"out\" type=\"as\" />\n"
+	      "    </method>\n"
+	      "    <method name=\"messageFileName\" >\n"
+	      "      <arg direction=\"out\" type=\"s\" />\n"
+	      "      <arg direction=\"in\" type=\"s\" name=\"id\" />\n"
+	      "    </method>\n"
+	      "    <method name=\"messageStatus\" >\n"
+	      "      <arg direction=\"out\" type=\"i\" />\n"
+	      "      <arg direction=\"in\" type=\"s\" name=\"id\" />\n"
+	      "    </method>\n"
+	      "    <method name=\"setMessageStatus\" >\n"
+	      "      <arg direction=\"out\" type=\"b\" />\n"
+	      "      <arg direction=\"in\" type=\"s\" name=\"id\" />\n"
+	      "      <arg direction=\"in\" type=\"i\" name=\"status\" />\n"
+	      "    </method>\n"
+	      "  </interface>\n"
+	      "")
 
 public:
   FolderAdaptor(Folder *parent);

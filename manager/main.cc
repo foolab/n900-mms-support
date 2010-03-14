@@ -4,6 +4,8 @@
 #include <QDBusError>
 #include "folders.hh"
 #include "wappush.hh"
+#include "queuemanager.hh"
+#include "mmsprotocolhandler.hh"
 
 WapPush *createAndRegisterWapPush(QDBusConnection& c) {
   // TODO: remove this extra service.
@@ -34,48 +36,74 @@ template <typename T> T *createAndRegisterFolder(QDBusConnection& c, const QStri
   return t;
 }
 
+QueueManager *createAndRegisterManager(QDBusConnection& c) {
+  if (!c.registerService("org.foolab.MMS.QueueManager")) {
+    qWarning() << "Failed to register org.foolab.MMS.QueueManager" << c.lastError().message();
+    return 0;
+  }
+
+  QueueManager *manager = new QueueManager(qApp);
+  if (!c.registerObject("/org/foolab/MMS/QueueManager", manager)) {
+    qWarning() << "Failed to register /org/foolab/MMS/QueueManager" << c.lastError().message();
+    manager->deleteLater();
+    return 0;
+  }
+
+  return manager;
+}
+
 int main(int argc, char *argv[]) {
   QCoreApplication app(argc, argv);
 
   QDBusConnection c = QDBusConnection::systemBus();
 
-  if (!c.registerService("org.foolab.MMS.Manager")) {
-    qWarning() << "Failed to register org.foolab.MMS.Manager" << c.lastError().message();
+  WapPush *pushHandler = createAndRegisterWapPush(c);
+
+  Incoming *incoming = createAndRegisterFolder<Incoming>(c, "Incoming");
+  Outbox *outbox = createAndRegisterFolder<Outbox>(c, "Outbox");
+  Inbox *inbox = createAndRegisterFolder<Inbox>(c, "Inbox");
+  Sent *sent = createAndRegisterFolder<Sent>(c, "Sent");
+  Reports *reports = createAndRegisterFolder<Reports>(c, "Reports");
+  Failed *failed = createAndRegisterFolder<Failed>(c, "Failed");
+  Pushed *pushed = createAndRegisterFolder<Pushed>(c, "Pushed");
+  Queue *queue = createAndRegisterFolder<Queue>(c, "Queue");
+
+
+
+
+
+  QueueManager *manager = createAndRegisterManager(c);
+
+  MmsProtocolHandler *handler = new MmsProtocolHandler(qApp);
+
+  if (!pushHandler || !incoming || !outbox || !inbox || !sent || !reports || !failed || !pushed || !queue || !manager) {
     return 1;
   }
 
-  WapPush *p = createAndRegisterWapPush(c);
-  if (!p) {
-    return 1;
-  }
+  QObject::connect(pushHandler, SIGNAL(addMessage(const QByteArray&)), pushed, SLOT(addMessage(const QByteArray&)));
+  handler->setPushed(pushed);
+  handler->setIncoming(incoming);
+  handler->setReports(reports);
 
-  Incoming *i = createAndRegisterFolder<Incoming>(c, "Incoming");
-  if (!i) {
-    return 1;
-  }
+  /*
+   * Handler will move NotificationInd from Pushed to Incoming.
+   * The user asks to download an MMS so it gets moved to Queue.
+   * QueueManager picks it up and downloads it.
+   *
+   * QueueManager will move messages to either Incoming or Inbox.
+   */
 
-  Folder *f = 0;
-  f = createAndRegisterFolder<Sent>(c, "Sent");
-  if (!f) {
-    return 1;
-  }
+  //  handler->setOutbox(outbox);
+  QObject::connect(manager, SIGNAL(messageDownloaded(const QString&, const QString&)),
+		   handler, SLOT(messageDownloaded(const QString&, const QString&)));
 
-  f = createAndRegisterFolder<Inbox>(c, "Inbox");
-  if (!f) {
-    return 1;
-  }
+  manager->setQueue(queue);
+  manager->setIncoming(incoming);
+  manager->setInbox(inbox);
 
-  f = createAndRegisterFolder<Outgoing>(c, "Outgoing");
-  if (!f) {
-    return 1;
-  }
-
-  f = createAndRegisterFolder<Reports>(c, "Reports");
-  if (!f) {
-    return 1;
-  }
-
-  QObject::connect(p, SIGNAL(addMessage(const QByteArray&)), i, SLOT(addMessage(const QByteArray&)));
+  //  MmsSender *sender
+//  Sender *sender = new Sender(this);
+//  sender->setOutbox(outbox);
 
   return app.exec();
 }

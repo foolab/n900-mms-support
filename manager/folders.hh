@@ -10,11 +10,11 @@ public:
   Incoming(QObject *parent = 0) : Folder("incoming", parent) {}
 };
 
-class Outgoing : public Folder {
+class Outbox : public Folder {
   Q_OBJECT
 
 public:
-  Outgoing(QObject *parent = 0) : Folder("outgoing", parent) {}
+  Outbox(QObject *parent = 0) : Folder("outbox", parent) {}
 };
 
 class Inbox : public Folder {
@@ -36,6 +36,20 @@ class Reports : public Folder {
 
 public:
   Reports(QObject *parent = 0) : Folder("reports", parent) {}
+};
+
+class Pushed : public Folder {
+  Q_OBJECT
+
+public:
+  Pushed(QObject *parent = 0) : Folder("pushed", parent) {}
+};
+
+class Queue : public Folder {
+  Q_OBJECT
+
+public:
+  Queue(QObject *parent = 0) : Folder("queue", parent) {}
 };
 
 #endif /* FOLDERS_HH */
